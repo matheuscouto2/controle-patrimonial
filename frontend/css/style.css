@@ -371,3 +371,67 @@ td button:disabled:hover {
 .card.valor {
     border-left: 5px solid var(--primary);
 }
+
+.paginacao {
+    margin-top: 20px;
+    display: flex;
+    gap: 8px;
+    justify-content: end;
+}
+
+.paginacao button {
+    background: white;
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 6px 12px;
+}
+
+.paginacao button:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.paginacao button.active-page {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.form-card {
+    background: #f8fafc;
+    padding: 28px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    max-width: 900px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 30px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    max-width: 100%;
+}
+
+.form-actions {
+    margin-top: 30px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}

@@ -1,13 +1,22 @@
-function loadMovimentacoes() {
+function loadMovimentacoes(pagina = 1) {
     ativarMenu("movimentacoes");
+
     fetch(API + "/movimentacoes", { headers: getHeaders() })
         .then(res => res.json())
         .then(data => {
+
+            const itensPorPagina = 5;
+            const totalPaginas = Math.ceil(data.length / itensPorPagina);
+            const inicio = (pagina - 1) * itensPorPagina;
+            const fim = inicio + itensPorPagina;
+            const dadosPaginados = data.slice(inicio, fim);
+
             let html = `
                 <div class="div-header-container">
                     <h2>Movimentações</h2>
                     <button onclick="formNovoMovimentacao()">+ NOVO</button>
                 </div>
+
                 <table>
                     <tr>
                         <th style="display:none;">ID</th>
@@ -20,7 +29,7 @@ function loadMovimentacoes() {
                     </tr>
             `;
 
-            data.forEach(b => {
+            dadosPaginados.forEach(b => {
                 html += `
                     <tr>
                         <td style="display:none;">${b.id}</td>
@@ -32,12 +41,28 @@ function loadMovimentacoes() {
                         <td>${b.setorOrigemNome}</td>
                         <td>${b.setorDestinoNome}</td>
                         <td>${formatarData(b.data)}</td>
-                        <td>${b.observacao}</td>
+                        <td>${b.observacao || ""}</td>
                     </tr>
                 `;
             });
 
             html += "</table>";
+
+            // Paginação
+            html += `<div class="paginacao">`;
+
+            for (let i = 1; i <= totalPaginas; i++) {
+                html += `
+                    <button 
+                        onclick="loadMovimentacoes(${i})" 
+                        class="${i === pagina ? "active-page" : ""}">
+                        ${i}
+                    </button>
+                `;
+            }
+
+            html += `</div>`;
+
             document.getElementById("conteudo").innerHTML = html;
         });
 }
@@ -46,19 +71,51 @@ function formNovoMovimentacao() {
     document.getElementById("conteudo").innerHTML = `
         <h2>Nova Movimentação</h2>
 
-        <select id="bem" onchange="aoSelecionarBem()">
-            <option value="">Selecione o bem</option>
-        </select>
-        <select id="setor_origem" disabled>
-            <option value="">Informe o bem</option>
-        </select>
-        <select id="setor_destino">
-            <option value="">Selecione o setor de destino</option>
-        </select>
-        <input id="data" type="date">
-        <input id="observacao" placeholder="Observações">
+        <div class="form-card">
+            <div class="form-grid">
 
-        <button onclick="salvarMovimentacao()">Salvar</button>
+                <div class="form-group">
+                    <label>Bem</label>
+                    <select id="bem" onchange="aoSelecionarBem()">
+                        <option value="">Selecione o bem</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Setor de Origem</label>
+                    <select id="setor_origem" disabled>
+                        <option value="">Informe o bem</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Setor de Destino</label>
+                    <select id="setor_destino">
+                        <option value="">Selecione o setor de destino</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Data</label>
+                    <input id="data" type="date">
+                </div>
+
+                <div class="form-group" style="grid-column: span 2;">
+                    <label>Observação</label>
+                    <input id="observacao" placeholder="Observações">
+                </div>
+
+            </div>
+
+            <div class="form-actions">
+                <button onclick="loadMovimentacoes()" style="background: var(--muted);">
+                    Cancelar
+                </button>
+                <button onclick="salvarMovimentacao()">
+                    Salvar
+                </button>
+            </div>
+        </div>
     `;
 
     carregarBens(null);
@@ -114,22 +171,56 @@ function editarMovimentacao(id) {
             const setorDestinoId = movimentacao.setorDestinoId;
 
             document.getElementById("conteudo").innerHTML = `
-                <h2>Editar Movimentação</h2>
+    <h2>Editar Movimentação</h2>
 
-                <input id="id" type="hidden" value="${movimentacao.id}">
+    <div class="form-card">
+        <input id="id" type="hidden" value="${movimentacao.id}">
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label>Bem</label>
                 <select id="bem" onchange="aoSelecionarBem()">
                     <option value="">Selecione o bem</option>
                 </select>
+            </div>
+
+            <div class="form-group">
+                <label>Setor de Origem</label>
                 <select id="setor_origem" disabled>
                     <option value="">Informe o bem</option>
                 </select>
+            </div>
+
+            <div class="form-group">
+                <label>Setor de Destino</label>
                 <select id="setor_destino">
                     <option value="">Selecione o setor de destino</option>
                 </select>
+            </div>
+
+            <div class="form-group">
+                <label>Data</label>
                 <input id="data" type="date" value="${movimentacao.data}">
-                <input id="observacao" placeholder="Observações" value="${movimentacao.observacao}">
-                <button onclick="atualizarMovimentacao()">Atualizar</button>
-            `;
+            </div>
+
+            <div class="form-group" style="grid-column: span 2;">
+                <label>Observação</label>
+                <input id="observacao" value="${movimentacao.observacao || ""}">
+            </div>
+
+        </div>
+
+        <div class="form-actions">
+            <button onclick="loadMovimentacoes()" style="background: var(--muted);">
+                Cancelar
+            </button>
+            <button onclick="atualizarMovimentacao()">
+                Atualizar
+            </button>
+        </div>
+    </div>
+`;
             carregarBens(bemId);
             carregarSetoresDestino(setorDestinoId);
         });

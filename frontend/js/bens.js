@@ -1,13 +1,22 @@
-function loadBens() {
+function loadBens(pagina = 1) {
     ativarMenu("bens");
+
     fetch(API + "/bens", { headers: getHeaders() })
         .then(res => res.json())
         .then(data => {
+
+            const itensPorPagina = 5;
+            const totalPaginas = Math.ceil(data.length / itensPorPagina);
+            const inicio = (pagina - 1) * itensPorPagina;
+            const fim = inicio + itensPorPagina;
+            const dadosPaginados = data.slice(inicio, fim);
+
             let html = `
                 <div class="div-header-container">
                     <h2>Bens</h2>
                     <button onclick="formNovoBem()">+ NOVO</button>
                 </div>
+
                 <table>
                     <tr>
                         <th style="display:none;">ID</th>
@@ -22,7 +31,7 @@ function loadBens() {
                     </tr>
             `;
 
-            data.forEach(b => {
+            dadosPaginados.forEach(b => {
                 html += `
                     <tr>
                         <td style="display:none;">${b.id}</td>
@@ -42,12 +51,32 @@ function loadBens() {
                         <td>${formatarMoeda(b.valor)}</td>
                         <td>${b.responsavelNome}</td>
                         <td>${b.setorNome}</td>
-                        <td style="width: 0px;"><span class="status ${b.status}">${b.status === "EM_MANUTENCAO" ? "MANUTENÇÃO" : b.status}</span></td>
+                        <td style="width: 0px;">
+                            <span class="status ${b.status}">
+                                ${b.status === "EM_MANUTENCAO" ? "MANUTENÇÃO" : b.status}
+                            </span>
+                        </td>
                     </tr>
                 `;
             });
 
             html += "</table>";
+
+            // Paginação
+            html += `<div class="paginacao">`;
+
+            for (let i = 1; i <= totalPaginas; i++) {
+                html += `
+                    <button 
+                        onclick="loadBens(${i})" 
+                        class="${i === pagina ? "active-page" : ""}">
+                        ${i}
+                    </button>
+                `;
+            }
+
+            html += `</div>`;
+
             document.getElementById("conteudo").innerHTML = html;
         });
 }
@@ -56,20 +85,54 @@ function formNovoBem() {
     document.getElementById("conteudo").innerHTML = `
         <h2>Novo Bem</h2>
 
-        <input id="nome" placeholder="Nome">
-        <input id="tombo" placeholder="Tombo">
-        <input id="aquisicao" type="date">
-        <input id="valor" type="number" placeholder="R$ 0,00">
+        <div class="form-card">
+            <div class="form-grid">
 
-        <select id="responsavel">
-            <option value="">Selecione o responsável</option>
-        </select>
+                <div class="form-group">
+                    <label>Nome</label>
+                    <input id="nome">
+                </div>
 
-        <select id="setor">
-            <option value="">Selecione o setor</option>
-        </select>
+                <div class="form-group">
+                    <label>Tombo</label>
+                    <input id="tombo">
+                </div>
 
-        <button onclick="salvarBem()">Salvar</button>
+                <div class="form-group">
+                    <label>Data de Aquisição</label>
+                    <input id="aquisicao" type="date">
+                </div>
+
+                <div class="form-group">
+                    <label>Valor</label>
+                    <input id="valor" type="number" placeholder="R$ 0,00">
+                </div>
+
+                <div class="form-group">
+                    <label>Responsável</label>
+                    <select id="responsavel">
+                        <option value="">Selecione o responsável</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Setor</label>
+                    <select id="setor">
+                        <option value="">Selecione o setor</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="form-actions">
+                <button onclick="loadBens()" style="background: var(--muted);">
+                    Cancelar
+                </button>
+                <button onclick="salvarBem()">
+                    Salvar
+                </button>
+            </div>
+        </div>
     `;
 
     carregarResponsaveis(null);
@@ -171,28 +234,64 @@ function editarBem(id) {
     fetch(API + "/bens/" + id, { headers: getHeaders() })
         .then(res => res.json())
         .then(bem => {
-            const responsavelId = bem.responsavelId;
-            const setorId = bem.setorId;
 
             document.getElementById("conteudo").innerHTML = `
                 <h2>Editar Bem</h2>
-                <input id="id" type="hidden" value="${bem.id}">
-                <input id="nome" value="${bem.nome}">
-                <input id="tombo" value="${bem.tombo}">
-                <input id="aquisicao" type="date" value="${bem.aquisicao}">
-                <input id="valor" type="number" value="${bem.valor}">
 
-                <select id="responsavel">
-                    <option value="">Selecione o responsável</option>
-                </select>
+                <div class="form-card">
+                    <input id="id" type="hidden" value="${bem.id}">
 
-                <select id="setor" disabled>
-                    <option value="">Selecione o setor</option>
-                </select>
-                <button onclick="atualizarBem()">Atualizar</button>
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label>Nome</label>
+                            <input id="nome" value="${bem.nome}">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Tombo</label>
+                            <input id="tombo" value="${bem.tombo}">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Data de Aquisição</label>
+                            <input id="aquisicao" type="date" value="${bem.aquisicao}">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Valor</label>
+                            <input id="valor" type="number" value="${bem.valor}">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Responsável</label>
+                            <select id="responsavel">
+                                <option value="">Selecione o responsável</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Setor</label>
+                            <select id="setor">
+                                <option value="">Selecione o setor</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <div class="form-actions">
+                        <button onclick="loadBens()" style="background: var(--muted);">
+                            Cancelar
+                        </button>
+                        <button onclick="atualizarBem()">
+                            Atualizar
+                        </button>
+                    </div>
+                </div>
             `;
-            carregarResponsaveis(responsavelId);
-            carregarSetores(setorId);
+
+            carregarResponsaveis(bem.responsavelId);
+            carregarSetores(bem.setorId);
         });
 }
 

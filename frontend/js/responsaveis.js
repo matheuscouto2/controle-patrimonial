@@ -1,13 +1,22 @@
-function loadResponsaveis() {
+function loadResponsaveis(pagina = 1) {
     ativarMenu("responsaveis");
+
     fetch(API + "/responsaveis", { headers: getHeaders() })
         .then(res => res.json())
         .then(data => {
+
+            const itensPorPagina = 5;
+            const totalPaginas = Math.ceil(data.length / itensPorPagina);
+            const inicio = (pagina - 1) * itensPorPagina;
+            const fim = inicio + itensPorPagina;
+            const dadosPaginados = data.slice(inicio, fim);
+
             let html = `
                 <div class="div-header-container">
                     <h2>Responsáveis</h2>
                     <button onclick="formNovoResponsavel()">+ NOVO</button>
                 </div>
+
                 <table>
                     <tr>
                         <th style="display: none;">ID</th>
@@ -17,7 +26,7 @@ function loadResponsaveis() {
                     </tr>
             `;
 
-            data.forEach(b => {
+            dadosPaginados.forEach(b => {
                 html += `
                     <tr>
                         <td style="display: none;">${b.id}</td>
@@ -32,18 +41,54 @@ function loadResponsaveis() {
             });
 
             html += "</table>";
+
+            // Paginação
+            html += `<div class="paginacao">`;
+
+            for (let i = 1; i <= totalPaginas; i++) {
+                html += `
+                    <button 
+                        onclick="loadResponsaveis(${i})" 
+                        class="${i === pagina ? "active-page" : ""}">
+                        ${i}
+                    </button>
+                `;
+            }
+
+            html += `</div>`;
+
             document.getElementById("conteudo").innerHTML = html;
         });
 }
 
 function formNovoResponsavel() {
     document.getElementById("conteudo").innerHTML = `
-        <h2>Novo Responsavel</h2>
+        <h2>Novo Responsável</h2>
 
-        <input id="nome" placeholder="Nome">
-        <input id="email" placeholder="Email">
+        <div class="form-card">
+            <div class="form-grid">
 
-        <button onclick="salvarResponsavel()">Salvar</button>
+                <div class="form-group">
+                    <label>Nome</label>
+                    <input id="nome">
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <input id="email" type="email">
+                </div>
+
+            </div>
+
+            <div class="form-actions">
+                <button onclick="loadResponsaveis()" style="background: var(--muted);">
+                    Cancelar
+                </button>
+                <button onclick="salvarResponsavel()">
+                    Salvar
+                </button>
+            </div>
+        </div>
     `;
 }
 
@@ -63,12 +108,35 @@ function editarResponsavel(id) {
         .then(res => res.json())
         .then(responsavel => {
             document.getElementById("conteudo").innerHTML = `
-                <h2>Editar Responsavel</h2>
-                <input id="id" type="hidden" value="${responsavel.id}">
+    <h2>Editar Responsável</h2>
+
+    <div class="form-card">
+        <input id="id" type="hidden" value="${responsavel.id}">
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label>Nome</label>
                 <input id="nome" value="${responsavel.nome}">
-                <input id="email" value="${responsavel.email}">
-                <button onclick="atualizarResponsavel()">Atualizar</button>
-            `;
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input id="email" type="email" value="${responsavel.email}">
+            </div>
+
+        </div>
+
+        <div class="form-actions">
+            <button onclick="loadResponsaveis()" style="background: var(--muted);">
+                Cancelar
+            </button>
+            <button onclick="atualizarResponsavel()">
+                Atualizar
+            </button>
+        </div>
+    </div>
+`;
         });
 }
 
