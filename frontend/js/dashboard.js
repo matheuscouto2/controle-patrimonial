@@ -1,5 +1,7 @@
 function loadDashboard() {
     ativarMenu("dash");
+    showLoading();
+
     fetch(API + "/dashboard", { headers: getHeaders() })
         .then(res => res.json())
         .then(d => {
@@ -51,5 +53,11 @@ function loadDashboard() {
                     `).join("")}
                 </table>
             `;
+        })
+        .catch(err => {
+            alert("Erro ao carregar dados: ", err);
+        })
+        .finally(() => {
+            hideLoading();
         });
 }

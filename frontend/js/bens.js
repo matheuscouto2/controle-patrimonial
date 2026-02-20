@@ -1,5 +1,6 @@
 function loadBens(pagina = 1) {
     ativarMenu("bens");
+    showLoading();
 
     fetch(API + "/bens", { headers: getHeaders() })
         .then(res => res.json())
@@ -78,6 +79,12 @@ function loadBens(pagina = 1) {
             html += `</div>`;
 
             document.getElementById("conteudo").innerHTML = html;
+        })
+        .catch(err => {
+            alert("Erro ao carregar dados: ", err);
+        })
+        .finally(() => {
+            hideLoading();
         });
 }
 

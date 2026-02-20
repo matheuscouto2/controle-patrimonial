@@ -1,5 +1,6 @@
 function loadResponsaveis(pagina = 1) {
     ativarMenu("responsaveis");
+    showLoading();
 
     fetch(API + "/responsaveis", { headers: getHeaders() })
         .then(res => res.json())
@@ -58,6 +59,12 @@ function loadResponsaveis(pagina = 1) {
             html += `</div>`;
 
             document.getElementById("conteudo").innerHTML = html;
+        })
+        .catch(err => {
+            alert("Erro ao carregar dados: ", err);
+        })
+        .finally(() => {
+            hideLoading();
         });
 }
 
