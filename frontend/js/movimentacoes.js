@@ -5,7 +5,7 @@ function loadMovimentacoes(pagina = 1) {
         .then(res => res.json())
         .then(data => {
 
-            const itensPorPagina = 5;
+            const itensPorPagina = 10;
             const totalPaginas = Math.ceil(data.length / itensPorPagina);
             const inicio = (pagina - 1) * itensPorPagina;
             const fim = inicio + itensPorPagina;
@@ -129,6 +129,11 @@ function salvarMovimentacao() {
     const data = document.getElementById("data").value;
     const observacao = document.getElementById("observacao").value;
 
+    if (!bemId || !setorOrigemId || !setorDestinoId || !data || !observacao) {
+        Swal.fire("Erro", "Todos os campos são obrigatórios", "error");
+        return;
+    }
+
     fetch(API + "/movimentacoes", {
         method: "POST",
         headers: getHeaders(),
@@ -233,6 +238,11 @@ function atualizarMovimentacao() {
     const setorDestinoId = document.getElementById("setor_destino").value;
     const data = document.getElementById("data").value;
     const observacao = document.getElementById("observacao").value;
+
+    if (!bemId || !setorOrigemId || !setorDestinoId || !data || !observacao) {
+        Swal.fire("Erro", "Todos os campos são obrigatórios", "error");
+        return;
+    }
 
     fetch(API + "/movimentacoes", {
         method: "PUT",

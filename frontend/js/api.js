@@ -1,4 +1,4 @@
-const API = "http://localhost:8080";
+const API = "https://controle-patrimonial-cr56.onrender.com";
 
 function getHeaders() {
     return {

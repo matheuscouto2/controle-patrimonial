@@ -5,7 +5,7 @@ function loadBens(pagina = 1) {
         .then(res => res.json())
         .then(data => {
 
-            const itensPorPagina = 5;
+            const itensPorPagina = 10;
             const totalPaginas = Math.ceil(data.length / itensPorPagina);
             const inicio = (pagina - 1) * itensPorPagina;
             const fim = inicio + itensPorPagina;
@@ -146,6 +146,11 @@ function salvarBem() {
     const valor = document.getElementById("valor").value;
     const responsavelId = document.getElementById("responsavel").value;
     const setorId = document.getElementById("setor").value;
+
+    if (!nome || !tombo || !aquisicao || !valor || !responsavelId || !setorId) {
+        Swal.fire("Erro", "Todos os campos são obrigatórios", "error");
+        return;
+    }
 
     fetch(API + "/bens", {
         method: "POST",
@@ -304,6 +309,11 @@ function atualizarBem() {
     const status = document.getElementById("status").value;
     const responsavelId = document.getElementById("responsavel").value;
     const setorId = document.getElementById("setor").value;
+
+    if (!nome || !tombo || !aquisicao || !valor || !responsavelId || !setorId) {
+        Swal.fire("Erro", "Todos os campos são obrigatórios", "error");
+        return;
+    }
 
     fetch(API + "/bens", {
         method: "PUT",

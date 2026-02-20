@@ -2,7 +2,7 @@ function login() {
     const usuario = document.getElementById("usuario").value;
     const senha = document.getElementById("senha").value;
 
-    fetch("http://localhost:8080/auth", {
+    fetch("https://controle-patrimonial-cr56.onrender.com/auth", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

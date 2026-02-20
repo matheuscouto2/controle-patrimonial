@@ -5,7 +5,7 @@ function loadResponsaveis(pagina = 1) {
         .then(res => res.json())
         .then(data => {
 
-            const itensPorPagina = 5;
+            const itensPorPagina = 10;
             const totalPaginas = Math.ceil(data.length / itensPorPagina);
             const inicio = (pagina - 1) * itensPorPagina;
             const fim = inicio + itensPorPagina;
@@ -96,6 +96,11 @@ function salvarResponsavel() {
     const nome = document.getElementById("nome").value;
     const email = document.getElementById("email").value;
 
+    if (!nome || !email) {
+        Swal.fire("Erro", "Todos os campos são obrigatórios", "error");
+        return;
+    }
+
     fetch(API + "/responsaveis", {
         method: "POST",
         headers: getHeaders(),
@@ -144,6 +149,11 @@ function atualizarResponsavel() {
     const id = document.getElementById("id").value;
     const nome = document.getElementById("nome").value;
     const email = document.getElementById("email").value;
+
+    if (!nome || !email) {
+        Swal.fire("Erro", "Todos os campos são obrigatórios", "error");
+        return;
+    }
 
     fetch(API + "/responsaveis", {
         method: "PUT",

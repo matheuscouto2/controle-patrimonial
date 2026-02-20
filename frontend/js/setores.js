@@ -5,7 +5,7 @@ function loadSetores(pagina = 1) {
         .then(res => res.json())
         .then(data => {
 
-            const itensPorPagina = 5;
+            const itensPorPagina = 10;
             const totalPaginas = Math.ceil(data.length / itensPorPagina);
             const inicio = (pagina - 1) * itensPorPagina;
             const fim = inicio + itensPorPagina;
@@ -96,6 +96,11 @@ function salvarSetor() {
     const nome = document.getElementById("nome").value;
     const descricao = document.getElementById("descricao").value;
 
+    if (!nome || !descricao) {
+        Swal.fire("Erro", "Todos os campos são obrigatórios", "error");
+        return;
+    }
+
     fetch(API + "/setores", {
         method: "POST",
         headers: getHeaders(),
@@ -144,6 +149,11 @@ function atualizarSetor() {
     const id = document.getElementById("id").value;
     const nome = document.getElementById("nome").value;
     const descricao = document.getElementById("descricao").value;
+
+    if (!nome || !descricao) {
+        Swal.fire("Erro", "Todos os campos são obrigatórios", "error");
+        return;
+    }
 
     fetch(API + "/setores", {
         method: "PUT",
