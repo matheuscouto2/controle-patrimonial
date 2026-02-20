@@ -524,3 +524,106 @@ td button:disabled:hover {
 @keyframes spin {
     to { transform: rotate(360deg); }
 }
+
+@media (max-width: 768px) {
+
+    body {
+        overflow: auto;
+    }
+
+    nav {
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 12px;
+    }
+
+    nav button {
+        font-size: 13px;
+        padding: 6px 10px;
+    }
+
+    nav button:last-child {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    main {
+        margin: 12px;
+        padding: 18px;
+        border-radius: 12px;
+    }
+
+    h2 {
+        font-size: 18px;
+    }
+
+    .cards {
+        grid-template-columns: 1fr;
+    }
+
+    .card strong {
+        font-size: 20px;
+    }
+
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+        font-size: 12px;
+    }
+
+    th, td {
+        padding: 10px;
+    }
+
+    td button {
+        min-width: auto;
+        padding: 5px 8px;
+        font-size: 12px;
+    }
+
+    .status {
+        min-width: auto;
+        font-size: 11px;
+        padding: 4px 8px;
+    }
+
+    .paginacao {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .paginacao button {
+        padding: 5px 8px;
+        font-size: 12px;
+    }
+
+    .form-card {
+        padding: 20px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .form-actions button {
+        width: 100%;
+    }
+
+    /* LOGIN */
+    body.login .login-container {
+        padding: 40px 25px;
+        margin: 20px;
+    }
+
+    body.login .login-container h2 {
+        font-size: 22px;
+        margin-bottom: 30px;
+    }
+
+}
