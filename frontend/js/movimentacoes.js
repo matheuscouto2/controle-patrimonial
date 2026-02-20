@@ -1,5 +1,6 @@
 function loadMovimentacoes(pagina = 1) {
     ativarMenu("movimentacoes");
+    showLoading();
 
     fetch(API + "/movimentacoes", { headers: getHeaders() })
         .then(res => res.json())
@@ -64,6 +65,12 @@ function loadMovimentacoes(pagina = 1) {
             html += `</div>`;
 
             document.getElementById("conteudo").innerHTML = html;
+        })
+        .catch(err => {
+            alert("Erro ao carregar dados: ", err);
+        })
+        .finally(() => {
+            hideLoading();
         });
 }
 
