@@ -615,7 +615,6 @@ td button:disabled:hover {
         width: 100%;
     }
 
-    /* LOGIN */
     body.login .login-container {
         padding: 40px 25px;
         margin: 20px;
