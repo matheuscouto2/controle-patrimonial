@@ -20,6 +20,8 @@ function hideLoading() {
     document.getElementById("loading").style.display = "none";
 }
 
+const originalFetch = window.fetch;
+
 window.fetch = async function (...args) {
     try {
         const response = await originalFetch(...args);
